@@ -32,7 +32,7 @@ public class Dobavljac implements Serializable {
 	
 	@JsonIgnore
 	//bi-directional many-to-one association to Porudzbina
-	@OneToMany(mappedBy="dobavljac")
+	@OneToMany(mappedBy="dobavljac", cascade= {CascadeType.DETACH, CascadeType.REMOVE})
 	private List<Porudzbina> porudzbinas;
 
 	public Dobavljac() {
