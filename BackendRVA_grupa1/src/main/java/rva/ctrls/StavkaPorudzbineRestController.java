@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import rva.jpa.Porudzbina;
 import rva.jpa.StavkaPorudzbine;
 import rva.repositories.PorudzbinaRepository;
 import rva.repositories.StavkaPorudzbineRepository;
 
 @RestController
+@Api(tags = {"Stavka Porudžbine CRUD operacije"})
 public class StavkaPorudzbineRestController {
 
 	@Autowired
@@ -33,24 +36,29 @@ public class StavkaPorudzbineRestController {
 	private JdbcTemplate jdbcTemplate;
 	
 	@GetMapping("stavkaPorudzbine")
+	@ApiOperation(value = "Vraca kolekciju svih stavki iz baze podataka")
 	public Collection<StavkaPorudzbine> getStavkePorudzbine() {
 		return stavkaPorudzbineRepository.findAll();
 	}
 	@GetMapping("stavkaPorudzbine/{id}")
+	@ApiOperation(value = "Vraca stavku u odnosu na posledjenu vrednost path varijable id")
 	public StavkaPorudzbine getStavkaPorudzbine(@PathVariable("id") Integer id) {
 		return stavkaPorudzbineRepository.getOne(id);
 	}
 	@GetMapping("stavkeZaPorudzbinaID/{id}")
+	@ApiOperation(value = "Vraca kolekciju stavki koje se odnose na porudžbinu sa prosleđenom vrednošću id-ija")
 	public Collection<StavkaPorudzbine> getStavkePorudzbinePoPorudzbiniID(@PathVariable("id") Integer id) {
 		Porudzbina p = porudzbinaRepository.getOne(id);
 		return stavkaPorudzbineRepository.findByPorudzbina(p);
 	
 	}
 	@GetMapping("stavkePorudzbineCena/{cena}")
+	@ApiOperation(value = "Vraca kolekciju stavki čija je cena manja od vrednosti prosleđene u okviru path varijable cena")
 	public Collection<StavkaPorudzbine> getStavkePorudzbineCena(@PathVariable("cena") BigDecimal cena) {
 		return stavkaPorudzbineRepository.findByCenaLessThanOrderById(cena);
 	}
 	@PostMapping("stavkaPorudzbine")
+	@ApiOperation(value = "Dodaje novu stavku porudžbine u bazu podataka.")
 	public ResponseEntity<StavkaPorudzbine> insertStavkaPorudzbine(@RequestBody StavkaPorudzbine stavkaPorudzbine){
 		if(!stavkaPorudzbineRepository.existsById(stavkaPorudzbine.getId()))
 		{	
@@ -61,6 +69,7 @@ public class StavkaPorudzbineRestController {
 		return new ResponseEntity<StavkaPorudzbine>(HttpStatus.CONFLICT);
 	}
 	@PutMapping("stavkaPorudzbine")
+	@ApiOperation(value = "Update-uje postojeću stavku.")
 	public ResponseEntity<StavkaPorudzbine> updateStavkaPorudzbine(@RequestBody StavkaPorudzbine stavkaPorudzbine){
 		if(!stavkaPorudzbineRepository.existsById(stavkaPorudzbine.getId()))
 		{	
@@ -70,6 +79,7 @@ public class StavkaPorudzbineRestController {
 		return new ResponseEntity<StavkaPorudzbine>(HttpStatus.OK);
 	}
 	@DeleteMapping("stavkaPorudzbine/{id}")
+	@ApiOperation(value = "Briše stavku u odnosu na vrednost posleđenu path varijable id.")
 	public ResponseEntity<StavkaPorudzbine> deleteStavkaPorudzbine(@PathVariable("id") Integer id) {
 		if(!stavkaPorudzbineRepository.existsById(id)) {
 			return new ResponseEntity<StavkaPorudzbine>(HttpStatus.NO_CONTENT);

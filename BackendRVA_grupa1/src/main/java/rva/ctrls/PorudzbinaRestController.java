@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import rva.repositories.PorudzbinaRepository;
 import rva.jpa.Porudzbina;
 
 @RestController
+@Api(tags = {"Porudzbina CRUD operacije"})
 public class PorudzbinaRestController {
 	
 	@Autowired
@@ -27,18 +30,22 @@ public class PorudzbinaRestController {
 	private JdbcTemplate jdbcTemplate;
 	
 	@GetMapping("porudzbina")
+	@ApiOperation(value = "Vraca kolekciju svih porudzbina iz baze podataka")
 	public Collection<Porudzbina> getPorudzbine() {
 		return porudzbinaRepository.findAll();
 	}
 	@GetMapping("porudzbina/{id}")
+	@ApiOperation(value = "Vraca porudzbinu u odnosu na posledjenu vrednost path varijable id")
 	public Porudzbina getPorudzbina(@PathVariable("id") Integer id) {
 		return porudzbinaRepository.getOne(id);
 	}
 	@GetMapping("porudzbinePlacene")
+	@ApiOperation(value = "Vraca kolekciju porudzbina kod kojih je vrednost obećežja placeno jednaka sa true")
 	public Collection<Porudzbina> getPorudzbinaByPlaceno() {
 		return porudzbinaRepository.findByPlacenoTrue();
 	}
 	@PostMapping("porudzbina")
+	@ApiOperation(value = "Dodaje novu porudžbinu u bazu podataka.")
 	public ResponseEntity<Porudzbina> insertPorudzbina(@RequestBody Porudzbina porudzbina) {
 		if(!porudzbinaRepository.existsById(porudzbina.getId()))
 		{
@@ -48,6 +55,7 @@ public class PorudzbinaRestController {
 		return new ResponseEntity<Porudzbina>(HttpStatus.CONFLICT);
 	}
 	@PutMapping("porudzbina")
+	@ApiOperation(value = "Update-uje postojeću porudžbinu.")
 	public ResponseEntity<Porudzbina> updatePorudzbina(@RequestBody Porudzbina porudzbina) {
 		if(!porudzbinaRepository.existsById(porudzbina.getId()))
 			return new ResponseEntity<Porudzbina>(HttpStatus.NO_CONTENT);
@@ -55,6 +63,7 @@ public class PorudzbinaRestController {
 		return new ResponseEntity<Porudzbina>(HttpStatus.OK);
 	}
 	@DeleteMapping("porudzbina/{id}")
+	@ApiOperation(value = "Briše porudžbinu u odnosu na vrednost posleđenu path varijable id.")
 	public ResponseEntity<Porudzbina> deletePorudzbina(@PathVariable("id") Integer id) {
 		if(!porudzbinaRepository.existsById(id)) {
 			return new ResponseEntity<Porudzbina>(HttpStatus.NO_CONTENT);
